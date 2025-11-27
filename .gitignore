@@ -13,5 +13,10 @@ wheels/
 tests/ISIC_2019_Training_Input
 tests/ISIC_2019_Training_GroundTruth.csv
 tests/MLtimes_1.txt
+
+# Model results and logs
 results/model_isic_cnn*.h5
+results/best_model*.h5
+tests/model_isic_cnn.h5
 older_models/model_isic_cnn*.h5
+results/training_log.csv
