@@ -20,19 +20,36 @@ The project supports:
 ## Project Structure
 
 ```
-derCNN/
+│   .gitignore
+│   .python-version
+│   pyproject.toml
+│   README.md
 │
-├── __init__.py
-├── __main__.py           # module entrypoint
-├── main.py               # CLI starter script
-├── config.py             # configuration: paths, image size, batch size
-├── data.py               # dataset loading and preprocessing
-├── model.py              # CNN model building and compilation
-├── train.py              # main training pipeline
-├── plot.py               # training history visualization
-├── callbacks.py          # Keras callbacks (checkpoint, early stopping)
-├── train_old.py          # legacy training script
-└── results/              # saved models and plots
+├───results
+│       .gitkeep
+│
+├───src
+│   ├───dermCNN
+│   │       callbacks.py
+│   │       config.py
+│   │       data.py
+│   │       main.py
+│   │       model.py
+│   │       plot.py
+│   │       train.py
+│   │       train_old.py
+│   │       __init__.py
+│   │       __main__.py
+│   │
+│   └───dermCNN.egg-info
+│           dependency_links.txt
+│           PKG-INFO
+│           requires.txt
+│           SOURCES.txt
+│           top_level.txt
+│
+└───tests
+        .gitkeep
 ```
 
 ---
