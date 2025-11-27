@@ -1,0 +1,18 @@
+[project]
+name = "dermCNN"
+version = "0.1.0"
+description = """
+Using machine learning for medical image classification – in this case, dermatoscopic images of skin lesions.
+
+Investigating the possibility of automatic detection of melanoma (MEL) and benign nevi (NV) using artificial neural networks (CNNs).
+
+Experimenting with different network parameters, data augmentation, and dataset splits to observe how they affect classification accuracy.
+"""
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "tensorflow>=2.14",
+    "pandas",
+    "scikit-learn",
+    "matplotlib"
+]
