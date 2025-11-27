@@ -20,11 +20,7 @@ The project supports:
 ## Project Structure
 
 ```
-│   .gitignore
-│   .python-version
-│   pyproject.toml
-│   README.md
-│
+bachelor/
 ├───results
 │       .gitkeep
 │
@@ -48,8 +44,13 @@ The project supports:
 │           SOURCES.txt
 │           top_level.txt
 │
-└───tests
-        .gitkeep
+├───tests
+│       .gitkeep             
+│
+│   .gitignore
+│   .python-version
+│   pyproject.toml
+└   README.md
 ```
 
 ---
