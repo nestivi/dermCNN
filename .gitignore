@@ -13,3 +13,5 @@ wheels/
 tests/ISIC_2019_Training_Input
 tests/ISIC_2019_Training_GroundTruth.csv
 tests/MLtimes_1.txt
+results/model_isic_cnn*.h5
+older_models/model_isic_cnn*.h5
