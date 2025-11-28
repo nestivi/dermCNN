@@ -11,6 +11,8 @@ wheels/
 
 # Dataset and test files
 tests/ISIC_2019_Training_Input
+tests/ISIC_2019_Training_Input.zip
+*.zip
 # tests/ISIC_2019_Training_GroundTruth.csv
 tests/MLtimes_1.txt
 
