@@ -8,6 +8,9 @@ from .config import BASE_DIR, CSV_PATH, IMG_SIZE, BATCH_SIZE
 
 
 def load_dataframe():
+    if not os.path.exists(CSV_PATH):
+        raise FileNotFoundError(f"CSV file not found: {CSV_PATH}")
+    
     df = pd.read_csv(CSV_PATH)
 
     df = df[(df["MEL"] == 1) | (df["NV"] == 1)]
