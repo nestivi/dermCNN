@@ -1,5 +1,6 @@
 # callbacks.py
 
+from .config import RESULTS_PATH
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, CSVLogger
 
 def get_callbacks():
@@ -15,6 +16,6 @@ def get_callbacks():
         save_best_only=True
     )
 
-    logger = CSVLogger("results/training_log.csv")
+    logger = CSVLogger(f'{RESULTS_PATH}/training_log.csv')
 
     return [early, checkpoint, logger]
