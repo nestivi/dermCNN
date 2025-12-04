@@ -10,6 +10,10 @@ wheels/
 .venv
 
 # Dataset and test files
+data/ISIC_2019_Training_Input
+data/ISIC_2019_Training_GroundTruth.csv
+data/ATTRIBUTION.txt
+data/ISIC_*.jpg
 tests/ISIC_2019_Training_Input
 tests/ISIC_2019_Training_GroundTruth.csv
 tests/MLtimes_1.txt
