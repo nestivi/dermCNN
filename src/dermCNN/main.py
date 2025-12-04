@@ -1,17 +1,19 @@
 # main.py
 
-from data_loader import load_dataframe, split_data, get_generators
-from trainer import train_model
-
+import sys
+from .train import train
 
 def main():
-    df = load_dataframe()
-    train_df, test_df = split_data(df)
-
-    train_gen, test_gen = get_generators(train_df, test_df)
-
-    train_model(train_gen, test_gen)
-
+    """
+    Główna funkcja uruchamiająca proces trenowania modelu.
+    """
+    print("--- Rozpoczęcie trenowania modelu dermCNN ---")
+    try:
+        train()
+        print("--- Trenowanie modelu zakończone pomyślnie ---")
+    except Exception as e:
+        print(f"Błąd podczas trenowania: {e}", file=sys.stderr)
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
