@@ -1,6 +1,7 @@
 # plot.py
 
 import matplotlib.pyplot as plt
+from .config import RESULTS_PATH
 
 def plot_history(history):
     acc = history.history["accuracy"]
@@ -26,5 +27,5 @@ def plot_history(history):
     plt.title("Loss")
     plt.legend()
 
-    plt.savefig("results/training_plot.png")
+    plt.savefig(f'{RESULTS_PATH}/training_plot.png')
     plt.show()
