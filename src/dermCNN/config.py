@@ -15,4 +15,4 @@ BATCH_SIZE = 32
 EPOCHS = 20
 
 # Model output path
-MODEL_OUTPUT_PATH = os.path.join(BASE_PROJECT_DIR, "results", "model_isic_cnn.h5")
+MODEL_OUTPUT_PATH = os.path.join("results", "model_isic_cnn.h5")
