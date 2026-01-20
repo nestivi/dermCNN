@@ -14,5 +14,6 @@ dependencies = [
     "tensorflow>=2.14",
     "pandas",
     "scikit-learn",
-    "matplotlib"
+    "matplotlib",
+    "seaborn"
 ]
