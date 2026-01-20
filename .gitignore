@@ -19,3 +19,4 @@ tests/MLtimes_1.txt
 # Model results and logs
 *.h5
 results/training_log.csv
+*.png
