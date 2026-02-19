@@ -1,29 +1,35 @@
 # model.py
-
-from tensorflow.keras import layers, models
-from .config import IMG_SIZE
-
+import tensorflow as tf
+from tensorflow.keras import layers, models, applications
+from .config import IMG_SIZE, NUM_CLASSES
 
 def build_model():
+    # Pobieramy pretrenowany model (bez górnych warstw klasyfikujących)
+    base_model = applications.EfficientNetB0(
+        weights='imagenet',  # Wagi nauczone na ImageNet
+        include_top=False,   # Odrzucamy ostatnią warstwę 1000 klas ImageNet
+        input_shape=(IMG_SIZE, IMG_SIZE, 3)
+    )
+
+    # Zamrażamy wagi bazowe - na początku uczymy tylko naszą nową "głowę"
+    base_model.trainable = False 
+
     model = models.Sequential([
-        layers.Input(shape=(IMG_SIZE, IMG_SIZE, 3)),
-        layers.Conv2D(32, (3, 3), activation='relu'),
-        layers.MaxPooling2D(),
-
-        layers.Conv2D(64, (3, 3), activation='relu'),
-        layers.MaxPooling2D(),
-
-        layers.Conv2D(128, (3, 3), activation='relu'),
-        layers.MaxPooling2D(),
-
-        layers.Flatten(),
-        layers.Dense(128, activation='relu'),
-        layers.Dense(1, activation='sigmoid')
+        base_model,
+        layers.GlobalAveragePooling2D(), # Zamienia mapy cech na wektor
+        layers.BatchNormalization(),
+        layers.Dropout(0.3),             # Zapobiega overfittingowi
+        layers.Dense(256, activation='relu'),
+        layers.Dropout(0.3),
+        layers.Dense(NUM_CLASSES, activation='softmax') # Softmax dla wielu klas
     ])
 
+    # Learning rate - dla transfer learningu często lepiej zacząć delikatnie
+    optimizer = tf.keras.optimizers.Adam(learning_rate=0.0001)
+
     model.compile(
-        optimizer="adam",
-        loss="binary_crossentropy",
+        optimizer=optimizer,
+        loss="categorical_crossentropy", # Musi być categorical dla >2 klas
         metrics=["accuracy"]
     )
 
