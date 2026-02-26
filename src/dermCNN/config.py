@@ -17,6 +17,5 @@ BENIGN_CLASSES = ['NV', 'BKL', 'DF', 'VASC']
 MALIGNANT_CLASSES = ['MEL', 'BCC', 'AK', 'SCC']
 
 # Ścieżka zapisu dla pierwszego modelu (Etap 1)
-MODEL_OUTPUT_PATH = os.path.join(BASE_PROJECT_DIR, "results", "model_stage1_binary.keras")
-
-# MODEL_OUTPUT_PATH = os.path.join("results", "model_isic_efficientnet.keras") # Zmiana rozszerzenia
+MODEL_OUTPUT_PATH_STAGE1 = os.path.join("results", "model_stage1_binary.keras")
+MODEL_OUTPUT_PATH_STAGE2 = os.path.join("results", "model_stage2_malignant.keras")
