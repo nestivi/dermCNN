@@ -5,16 +5,17 @@ from .data import load_dataframe, make_generators
 from .model import build_model
 from .callbacks import get_callbacks
 from .plot import plot_history
-from .config import EPOCHS, MODEL_OUTPUT_PATH
+from .config import EPOCHS, MODEL_OUTPUT_PATH_STAGE1, MODEL_OUTPUT_PATH_STAGE2
 
 def train(mode='binary'):
-    """
-    Uruchamia proces trenowania.
-    Domyślnie mode='binary' trenuje model rozróżniający zmiany łagodne od złośliwych.
-    """
-    print(f"\n--- ROZPOCZĘCIE TRENOWANIA: ETAP 1 ({mode.upper()}) ---")
+    print(f"\n--- ROZPOCZĘCIE TRENOWANIA: ({mode.upper()}) ---")
     
-    # 1. Ładowanie danych (DataFrame) dla odpowiedniego trybu
+    # Wybór odpowiedniej ścieżki zapisu w zależności od trybu
+    if mode == 'binary':
+        output_path = MODEL_OUTPUT_PATH_STAGE1
+    else:
+        output_path = MODEL_OUTPUT_PATH_STAGE2
+    
     df = load_dataframe(mode=mode)
 
     if df.empty:
@@ -22,22 +23,12 @@ def train(mode='binary'):
     
     print(f"Załadowano {len(df)} próbek z datasetu.")
     
-    # 2. Tworzenie generatorów z usuniętym skalowaniem (0-255 dla EfficientNet)
     train_gen, test_gen = make_generators(df, mode=mode)
-
-    # 3. Budowa modelu (1 neuron wyjściowy z sigmoid dla 'binary')
     model = build_model(mode=mode)
     
-    # Opcjonalnie: wyświetl podsumowanie modelu
-    # model.summary()
+    # Przekazujemy 'mode' do callbacków, aby nie nadpisywały checkpointów
+    callbacks = get_callbacks(mode=mode)
 
-    # 4. Inicjalizacja mechanizmów zwrotnych (np. EarlyStopping, Checkpoint)
-    callbacks = get_callbacks()
-
-    # UWAGA: Usunęliśmy wagi klas (class_weights), ponieważ przy podziale 
-    # ~63% (łagodne) do ~37% (złośliwe) zbiór jest wystarczająco zbalansowany.
-
-    # 5. Właściwa pętla treningowa
     history = model.fit(
         train_gen,
         validation_data=test_gen,
@@ -45,12 +36,12 @@ def train(mode='binary'):
         callbacks=callbacks
     )
 
-    # 6. Zapisywanie wytrenowanego modelu w formacie .keras
-    os.makedirs(os.path.dirname(MODEL_OUTPUT_PATH), exist_ok=True)
-    model.save(MODEL_OUTPUT_PATH)
-    print(f"\nModel zapisany pomyślnie: {MODEL_OUTPUT_PATH}")
+    # Zapis korzysta z dynamicznie wybranej ścieżki (output_path)
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    model.save(output_path)
+    print(f"\nModel zapisany pomyślnie: {output_path}")
     
-    # 7. Generowanie wykresów strat i celności
-    plot_history(history)
+    # Przekazujemy 'mode' do plotów, by zapisać wykres z odpowiednią nazwą
+    plot_history(history, mode=mode)
 
     return history
