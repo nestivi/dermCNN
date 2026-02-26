@@ -1,8 +1,9 @@
-# plot.py
+# src/dermCNN/plot.py
 
 import matplotlib.pyplot as plt
 
-def plot_history(history):
+# Dodaliśmy parametr mode='binary' (jako wartość domyślna)
+def plot_history(history, mode='binary'):
     acc = history.history["accuracy"]
     val_acc = history.history["val_accuracy"]
     loss = history.history["loss"]
@@ -16,15 +17,18 @@ def plot_history(history):
     plt.subplot(1, 2, 1)
     plt.plot(epochs, acc, label="train_acc")
     plt.plot(epochs, val_acc, label="val_acc")
-    plt.title("Accuracy")
+    # Tytuł wykresu będzie dynamiczny!
+    plt.title(f"Accuracy ({mode})")
     plt.legend()
 
     # Loss
     plt.subplot(1, 2, 2)
     plt.plot(epochs, loss, label="train_loss")
     plt.plot(epochs, val_loss, label="val_loss")
-    plt.title("Loss")
+    # Tytuł wykresu będzie dynamiczny!
+    plt.title(f"Loss ({mode})")
     plt.legend()
 
-    plt.savefig("results/training_plot.png")
+    # Dynamiczna nazwa pliku - już nic się nie nadpisze
+    plt.savefig(f"results/training_plot_{mode}.png")
     plt.show()
