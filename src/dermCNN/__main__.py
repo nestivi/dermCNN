@@ -1,22 +1,38 @@
-# src/dermCNN/__main__.py
+"""Command-line interface entry point for the DermCNN training pipeline.
+
+This script allows users to start the training process directly from the 
+terminal by executing the module. It provides arguments to select the 
+classification mode (binary or malignant_only).
+"""
+
 import argparse
 from .train import train
 
-if __name__ == "__main__":
-    # Tworzymy parser argumentów
-    parser = argparse.ArgumentParser(description="Trening systemu kaskadowego DermCNN.")
+def main() -> None:
+    """Parses command-line arguments and initiates the training process.
     
-    # Dodajemy opcję --mode
+    Returns:
+        None
+    """
+    # Create the argument parser
+    parser = argparse.ArgumentParser(
+        description="Train the DermCNN cascade classification system."
+    )
+    
+    # Add the --mode argument
     parser.add_argument(
         '--mode', 
         type=str, 
         choices=['binary', 'malignant_only'], 
-        default='binary', # Domyślnie uruchomi się Etap 1
-        help="Wybierz tryb trenowania: 'binary' (łagodne vs złośliwe) lub 'malignant_only' (klasyfikacja nowotworów)."
+        default='binary',
+        help="Select the training mode: 'binary' (benign vs. malignant) or 'malignant_only' (multi-class skin cancer classification)."
     )
     
-    # Pobieramy argumenty z terminala
+    # Parse arguments provided in the terminal
     args = parser.parse_args()
     
-    # Uruchamiamy trenowanie z wybranym argumentem
+    # Launch the training pipeline with the selected mode
     train(mode=args.mode)
+
+if __name__ == "__main__":
+    main()
