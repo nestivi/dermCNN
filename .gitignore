@@ -15,7 +15,11 @@ tests/ISIC_2019_Training_Input.zip
 *.zip
 # tests/ISIC_2019_Training_GroundTruth.csv
 tests/MLtimes_1.txt
+.gradio
 
 # Model results and logs
 *.h5
-results/training_log.csv
+# *.keras
+# results/training_log_*.csv
+# *.png
+# classification_report_*.txt

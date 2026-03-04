@@ -1,18 +1,39 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "dermCNN"
 version = "0.1.0"
 description = """
-Using machine learning for medical image classification – in this case, dermatoscopic images of skin lesions.
+A cascade-based deep learning system for automated skin lesion diagnosis from dermoscopic images.
 
-Investigating the possibility of automatic detection of melanoma (MEL) and benign nevi (NV) using artificial neural networks (CNNs).
+The project implements a two-stage classification pipeline:
+1. Binary classification (Benign vs. Malignant) using Transfer Learning with EfficientNetB0.
+2. Multi-class classification of malignant subtypes (Melanoma, BCC, AK, SCC).
 
-Experimenting with different network parameters, data augmentation, and dataset splits to observe how they affect classification accuracy.
+Features include a modular data pipeline, comprehensive evaluation metrics (Confusion Matrices, Precision/Recall), 
+and an interactive web interface for real-time AI-assisted diagnosis.
 """
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = [
-    "tensorflow>=2.14",
-    "pandas",
-    "scikit-learn",
-    "matplotlib"
+authors = [
+    {name = "Martin Krawiec"}
 ]
+dependencies = [
+    "tensorflow>=2.14.0",
+    "pandas>=2.0.0",
+    "seaborn>=0.12.0",
+    "scikit-learn>=1.3.0",
+    "matplotlib>=3.7.0",
+    "gradio>=4.0.0",
+    "pillow>=10.0.0",
+    "numpy<2.0.0" # Recommended for stability with current TensorFlow versions
+]
+
+[project.scripts]
+dermcnn = "src.dermCNN.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["dermCNN*"]
