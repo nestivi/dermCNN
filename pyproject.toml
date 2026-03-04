@@ -13,6 +13,7 @@ requires-python = ">=3.10"
 dependencies = [
     "tensorflow>=2.14",
     "pandas",
+    "seaborn",
     "scikit-learn",
     "matplotlib",
     "gradio"
