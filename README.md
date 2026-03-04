@@ -1,56 +1,56 @@
-# dermCNN
+# DermCNN AI - Cascade Classification System
 
 ## Description
 
 Project Overview
 
-This project uses Convolutional Neural Networks (CNNs) to classify dermatoscopic images of skin lesions. Currently, it supports binary classification between melanoma (MEL) and benign nevi (NV).
+This project implements an advanced Cascade Convolutional Neural Network (CNN) system for diagnosing dermatoscopic images of skin lesions, developed as part of a Bachelor's thesis. 
+
+Instead of a simple binary classifier, it utilizes a **Two-Stage Cascade Architecture** powered by Transfer Learning (EfficientNetB0):
+1. **Stage 1 (Binary):** Determines if a lesion is Benign (NV, BKL, DF, VASC) or Malignant (MEL, BCC, AK, SCC).
+2. **Stage 2 (Multi-class):** If malignant, it classifies the specific type of skin cancer.
+
+
 
 The project supports:
-
-* Data loading and filtering for the ISIC 2019 dataset
-* Train/test split
-* Data augmentation
-* Model training with callbacks
-* Saving the trained model
-* Plotting training progress
+* Automated data loading and preprocessing from the ISIC 2019 dataset.
+* Stratified train/test splitting to maintain class balance.
+* Image data augmentation.
+* Transfer Learning using frozen ImageNet weights.
+* Comprehensive evaluation (Confusion Matrices, Classification Reports).
+* A user-friendly Web UI built with Gradio.
 
 ---
 
 ## Project Structure
 
-```
+```text
 bachelor/
-├───results
-│       .gitkeep
+├───results/                 # Saved models (.keras), plots, and logs
 │
-├───src
-│   ├───dermCNN
-│   │       callbacks.py
-│   │       config.py
-│   │       data.py
-│   │       main.py
-│   │       model.py
-│   │       plot.py
-│   │       train.py
-│   │       train_old.py
+├───src/
+│   ├───dermCNN/
 │   │       __init__.py
-│   │       __main__.py
+│   │       __main__.py      # CLI Entry point for training
+│   │       config.py        # Global settings & hyperparameters
+│   │       data.py          # Data pipeline & augmentation
+│   │       model.py         # EfficientNetB0 architecture
+│   │       train.py         # Training pipeline orchestration
+│   │       callbacks.py     # EarlyStopping, ModelCheckpoint
+│   │       plot.py          # Training history visualization
+│   │       evaluate.py      # Testing & Confusion Matrix generation
+│   │       app_gradio.py    # Web interface for AI diagnosis
 │   │
-│   └───dermCNN.egg-info
-│           dependency_links.txt
-│           PKG-INFO
-│           requires.txt
-│           SOURCES.txt
-│           top_level.txt
+│   └───dermCNN.egg-info/
 │
-├───tests
-│       .gitkeep             
+├───tests/                   # ISIC_2019_Training_Input & GroundTruth.csv
+│   ├───ISIC_2019Training_Input/                # Dermatoscopic images of skin lesions
+│   └───ISIC_2019_Training_GroundTruth.csv
 │
 │   .gitignore
 │   .python-version
 │   pyproject.toml
-└   README.md
+└── README.md
 ```
 
 ---
@@ -58,150 +58,114 @@ bachelor/
 ## Installation
 
 1. Clone the repository:
-
 ```bash
-git clone https://github.com/nestivi/bachelor.git
-cd dermCNN
+git clone [https://github.com/nestivi/bachelor.git](https://github.com/nestivi/bachelor.git)
+cd bachelor
 ```
 
 2. Create a virtual environment:
-
 ```bash
 python -m venv .venv
 ```
 
 3. Activate the virtual environment:
-
 * Windows:
-
 ```bash
-.venv\Scripts\activate
+.venv/Scripts/activate
 ```
 
 * macOS/Linux:
-
 ```bash
 source .venv/bin/activate
 ```
 
-4. Install dependencies:
-
+4. Install the package:
 ```bash
 pip install -e .
 ```
-
-> **Note:** Make sure `tensorflow`, `pandas`, `scikit-learn`, and `matplotlib` are listed in pyproject.toml.
 
 ---
 
 ## Usage
 
-### Running training:
+1. Training the models
 
+You can train the models directly using the CLI module. It accepts a --mode argument to specify which stage of the cascade to train.
+
+Train Stage 1 (Benign vs. Malignant):
 ```bash
-python -m src.dermCNN
+python -m src.dermCNN --mode binary
 ```
 
-or using the CLI starter:
-
+Train Stage 2 (Malignant tumor types):
 ```bash
-python src/dermCNN/main.py
+python -m src.dermCNN --mode malignant_only
 ```
 
-The script will:
+The script will automatically:
+  - Load the dataset.
+  - Train the EfficientNetB0-based mdoel.
+  - Save the best model to results/best_model_<mode>.keras.
+  - Generate training history plots.
 
-* Load and filter the dataset (MEL vs NV)
-* Create train/test split
-* Initialize the CNN model
-* Train the model with data augmentation
-* Save the trained model to `results/model_isic_cnn.h5`
-* Plot training history (accuracy and loss)
+2. Evaluating the Models
+
+To evaluate the trained models on the test set and generate scientific metrics (Precision, Recall, F1-Score) along with a Seaborn Confusion Matrix:
+```bash
+python -m src.dermCNN.evaluate --mode binary
+```
+```bash
+python -m src.dermCNN.evaluate --mode malignant_only
+```
+Results (images and .txt reports) will be saved in the results/ folder.
+
+3. Launching the Web UI
+To use the system interactively, launch the Gradio web interface. The app lazily loads both trained models and performs a full cascade diagnosis on uploaded images.
+
+```bash
+python src/dermCNN/app_gradio.py
+```
+
+Open the provided local URL in your web browser.
 
 ---
 
 ## Tuning the Model
 
-### Parameters to adjust:
+Hyperparameters
+Centralized configurations can be found in src/dermCNN/config.py:
 
-* **Image size**: in `config.py` (`IMG_SIZE`)
-* **Batch size**: in `config.py` (`BATCH_SIZE`)
-* **Number of epochs**: in `train.py` (`epochs`)
-* **Data augmentation**: in `train.py`, adjust `ImageDataGenerator` parameters:
+  - IMG_SIZE = 224 (Required by EfficientNetB0)
+  - BATCH_SIZE = 32
+  - EPOCHS = 20
 
-  * `rotation_range`
-  * `zoom_range`
-  * `horizontal_flip`
-* **CNN architecture**: in `model.py`:
+Architecture & Transfer Learning
 
-  * number of layers
-  * number of filters
-  * kernel size
-  * dense layer size
+The network architecture is defined in src/dermCNN/model.py. The base EfficientNetB0 model is frozen to utilize pre-trained ImageNet features.
+If you want to fine-tune the model or increase its complexity, you can:
 
-### Using Callbacks:
+  - Modify the Dense layers in the classification head.
+  - Adjust the Dropout rate (currently 0.3) to prevent overfitting.
+  - Unfreeze the top layers of the base model for fine-tuning.
 
-* **EarlyStopping**: stops training if validation loss stops improving
-* **ModelCheckpoint**: saves the best model based on validation accuracy
+Callbacks
 
-Modify the parameters in `callbacks.py` to change behavior.
+Training is monitored via src/dermCNN/callbacks.py.
 
-### Example: increase model complexity
-
-```python
-# model.py
-layers.Conv2D(256, (3,3), activation='relu'),
-layers.MaxPooling2D(),
-```
-
-### Example 2: lightweight model for faster testing
----
-For quick testing of hyperparameter changes, you can train a smaller model with fewer layers or fewer filters, and fewer epochs:
-
-In config.py, adjust parameters:
-
-```python
-IMG_SIZE = 128  # smaller images
-BATCH_SIZE = 16
-EPOCHS = 2      # quick test
-```
-
-In model.py, you can reduce the number of filters per layer for faster training.
-
-Run the training as usual:
-
-```bash
-python -m src.dermCNN
-```
-
-This allows you to quickly verify changes in tuning without waiting for full training.
-
-## Visualizing Training
-
-The `plot.py` module can be used to visualize accuracy and loss per epoch:
-
-```python
-from plot import plot_training_history
-
-plot_training_history(history)
-```
-
-This will generate plots for:
-
-* Training vs validation accuracy
-* Training vs validation loss
-
-Plots are saved to `results/`.
+  - EarlyStopping: Stops training if val_loss doesn't improve for 5 epochs.
+  - ModelCheckpoint: Saves only the best performing weights.
 
 ---
 
-## Notes
+Visualizing Results
 
-* Ensure the dataset path in `config.py` is correct.
-* Training can take a long time depending on dataset size and GPU availability.
-* Use `train_old.py` only for reference; the main pipeline is in `train.py`.
+The pipeline automatically handles plotting.
 
----
+  - Training History: plot.py saves training_plot_binary.png showing Accuracy and Loss curves.
+  - Evaluation: evaluate.py generates high-quality Confusion Matrices suitable for academic papers.
+
+  ---
 
 ## License
 
-This project is licensed under MIT License.
+This project is licensed under the MIT License.
