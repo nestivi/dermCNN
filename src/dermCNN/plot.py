@@ -22,16 +22,12 @@ def plot_history(history: History, mode: str = 'binary') -> None:
     Returns:
         None
     """
-    # Extract metrics from the history dictionary
     acc = history.history["accuracy"]
     val_acc = history.history["val_accuracy"]
     loss = history.history["loss"]
     val_loss = history.history["val_loss"]
-
-    # Define the x-axis representing the number of epochs
     epochs = range(1, len(acc) + 1)
 
-    # Initialize the figure size
     plt.figure(figsize=(12, 5))
 
     # --- Subplot 1: Accuracy ---
@@ -52,10 +48,7 @@ def plot_history(history: History, mode: str = 'binary') -> None:
     plt.ylabel("Loss")
     plt.legend()
 
-    # Save the plot dynamically to prevent overwriting results from other stages
     output_filepath = f"results/training_plot_{mode}.png"
     plt.savefig(output_filepath)
     print(f"Training plot saved successfully: {output_filepath}")
-    
-    # Display the plot in the graphical interface
     plt.show()
