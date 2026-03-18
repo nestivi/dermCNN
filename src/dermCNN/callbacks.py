@@ -18,16 +18,12 @@ def get_callbacks(mode: str = 'binary') -> List[Callback]:
     Returns:
         List[Callback]: A list of configured Keras callback instances.
     """
-    # Stop training when validation loss stops improving for 5 epochs.
-    # Restores model weights from the epoch with the best validation loss.
     early = EarlyStopping(
         monitor="val_loss",
         patience=5,
-        restore_best_weights=True
+        restore_best_weights=True # Restores model weights from the epoch with the best validation loss.
     )
 
-    # Save the best model dynamically based on the current mode
-    # e.g., 'results/best_model_binary.keras' or 'results/best_model_malignant_only.keras'
     checkpoint = ModelCheckpoint(
         filepath=f"results/best_model_{mode}.keras",
         monitor="val_loss",
