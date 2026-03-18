@@ -36,11 +36,9 @@ def evaluate_model(mode: str = 'binary') -> None:
     """
     print(f"\n--- STARTING EVALUATION: ({mode.upper()}) ---")
 
-    # Validate mode
     if mode not in ['binary', 'malignant_only']:
         raise ValueError(f"Unsupported mode: {mode}. Choose 'binary' or 'malignant_only'.")
 
-    # 1. Determine the correct model path based on the mode
     if mode == 'binary':
         model_path = MODEL_OUTPUT_PATH_STAGE1
     else:
@@ -51,36 +49,25 @@ def evaluate_model(mode: str = 'binary') -> None:
             f"Error: Model file not found at {model_path}. Please train the model first."
         )
 
-    # 2. Load data using the exact same logic to ensure identical test splits
     df = load_dataframe(mode=mode)
-    
-    # Unpack generators, keeping only the test generator
     _, test_gen = make_generators(df, mode=mode) 
 
-    # 3. Load the pre-trained model into memory
     print(f"Loading model from: {model_path}...")
     model = tf.keras.models.load_model(model_path)
-
-    # 4. Generate predictions for the entire test set
-    print("Evaluating test images... This may take a moment.")
+    print("Evaluating test images...")
     predictions = model.predict(test_gen)
 
-    # 5. Process the results
     y_true = test_gen.classes  # Ground truth labels from the generator
-    class_labels = list(test_gen.class_indices.keys())  # Class names (e.g., ['benign', 'malignant'])
+    class_labels = list(test_gen.class_indices.keys())  # Class names ('benign', 'malignant')
 
     if mode == 'binary':
-        # Convert sigmoid probabilities to class indices (0 or 1) using a 50% threshold
         y_pred = (predictions > 0.5).astype(int).flatten()
     else:
-        # Convert softmax outputs to class indices by selecting the highest probability
         y_pred = np.argmax(predictions, axis=1)
 
-    # 6. Plot the Confusion Matrix
     cm = confusion_matrix(y_true, y_pred)
     
     plt.figure(figsize=(8, 6))
-    # Use seaborn.heatmap for a clean, colorful visualization
     sns.heatmap(
         cm, annot=True, fmt='d', cmap='Blues', 
         xticklabels=class_labels, yticklabels=class_labels
@@ -89,22 +76,17 @@ def evaluate_model(mode: str = 'binary') -> None:
     plt.ylabel('True Diagnosis')
     plt.xlabel('Model Prediction')
     
-    # Ensure results directory exists
     os.makedirs("results", exist_ok=True)
     cm_path = os.path.join("results", f"confusion_matrix_{mode}.png")
     plt.savefig(cm_path)
     print(f"Confusion matrix plot saved successfully to: {cm_path}")
-    
-    # Display the plot window
     plt.show()
 
-    # 7. Generate a textual classification report (Precision, Recall, F1-Score)
     print("\n--- CLASSIFICATION REPORT ---")
     print("You can copy this directly into your thesis!")
     report = classification_report(y_true, y_pred, target_names=class_labels)
     print(report)
     
-    # Save the textual report to a file for later use
     report_path = os.path.join("results", f"classification_report_{mode}.txt")
     with open(report_path, "w", encoding="utf-8") as f:
         f.write(report)
