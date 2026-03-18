@@ -14,12 +14,10 @@ def main() -> None:
     Returns:
         None
     """
-    # Create the argument parser
     parser = argparse.ArgumentParser(
         description="Train the DermCNN cascade classification system."
     )
     
-    # Add the --mode argument
     parser.add_argument(
         '--mode', 
         type=str, 
@@ -28,10 +26,7 @@ def main() -> None:
         help="Select the training mode: 'binary' (benign vs. malignant) or 'malignant_only' (multi-class skin cancer classification)."
     )
     
-    # Parse arguments provided in the terminal
     args = parser.parse_args()
-    
-    # Launch the training pipeline with the selected mode
     train(mode=args.mode)
 
 if __name__ == "__main__":
