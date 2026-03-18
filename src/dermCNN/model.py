@@ -29,7 +29,6 @@ def build_model(mode: str = 'binary') -> models.Sequential:
     Raises:
         ValueError: If an unsupported mode is provided.
     """
-    # Validate mode to ensure robustness (Defensive Programming)
     if mode not in ['binary', 'malignant_only']:
         raise ValueError(f"Unsupported mode: {mode}. Choose 'binary' or 'malignant_only'.")
 
@@ -40,10 +39,8 @@ def build_model(mode: str = 'binary') -> models.Sequential:
         input_shape=(IMG_SIZE, IMG_SIZE, 3)
     )
     
-    # Freeze the base model to retain pre-trained ImageNet features
-    base_model.trainable = False 
+    base_model.trainable = False  # Freeze the base model to retain pre-trained ImageNet features
 
-    # Construct the sequential model with a custom classification head
     model = models.Sequential([
         base_model,
         layers.GlobalAveragePooling2D(),
@@ -53,21 +50,14 @@ def build_model(mode: str = 'binary') -> models.Sequential:
         layers.Dropout(0.3)
     ])
 
-    # Attach the appropriate output layer and select the loss function
     if mode == 'binary':
-        # 1 output neuron with sigmoid activation for binary classification
-        # (0.0 = benign, 1.0 = malignant)
         model.add(layers.Dense(1, activation='sigmoid'))
         loss_fn = "binary_crossentropy"
     else:
-        # 4 output neurons with softmax activation for multi-class classification
         model.add(layers.Dense(4, activation='softmax'))
         loss_fn = "categorical_crossentropy"
-
-    # Use a lower learning rate for stable training of the custom head
     optimizer = tf.keras.optimizers.Adam(learning_rate=0.0001)
-
-    # Compile the model
+    
     model.compile(
         optimizer=optimizer, 
         loss=loss_fn, 
