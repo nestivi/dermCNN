@@ -29,32 +29,24 @@ def train(mode: str = 'binary') -> History:
     """
     print(f"\n--- STARTING TRAINING: ({mode.upper()}) ---")
     
-    # Validate mode
     if mode not in ['binary', 'malignant_only']:
         raise ValueError(f"Unsupported mode: {mode}. Choose 'binary' or 'malignant_only'.")
-
-    # Determine the correct output path based on the classification mode
+    
     if mode == 'binary':
         output_path = MODEL_OUTPUT_PATH_STAGE1
     else:
         output_path = MODEL_OUTPUT_PATH_STAGE2
     
-    # Load and validate the dataset
     df = load_dataframe(mode=mode)
-
     if df.empty:
         raise ValueError("DataFrame is empty. Please check the CSV_PATH in config.py.")
     
     print(f"Successfully loaded {len(df)} samples from the dataset.")
     
-    # Initialize data generators and build the CNN architecture
     train_gen, test_gen = make_generators(df, mode=mode)
     model = build_model(mode=mode)
-    
-    # Retrieve configured callbacks to prevent overfitting and save progress
     callbacks = get_callbacks(mode=mode)
 
-    # Execute the training loop
     history = model.fit(
         train_gen,
         validation_data=test_gen,
@@ -62,12 +54,10 @@ def train(mode: str = 'binary') -> History:
         callbacks=callbacks
     )
 
-    # Ensure the output directory exists and save the trained model
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     model.save(output_path)
     print(f"\nModel saved successfully at: {output_path}")
-    
-    # Generate and save the training history plots
+
     plot_history(history, mode=mode)
 
     return history
