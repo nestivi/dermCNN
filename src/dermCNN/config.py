@@ -20,11 +20,10 @@ EPOCHS = 20
 # List of all original classes in the ISIC 2019 dataset
 CLASSES = ['MEL', 'NV', 'BCC', 'AK', 'BKL', 'DF', 'VASC', 'SCC']
 
-# Stage 1: Binary classification split (Benign vs. Malignant)
+# Stage 1: Binary classification split
 BENIGN_CLASSES = ['NV', 'BKL', 'DF', 'VASC']
 MALIGNANT_CLASSES = ['MEL', 'BCC', 'AK', 'SCC']
 
 # --- Output Paths ---
-# Save paths for the trained Keras models
 MODEL_OUTPUT_PATH_STAGE1 = os.path.join("results", "model_stage1_binary.keras")
 MODEL_OUTPUT_PATH_STAGE2 = os.path.join("results", "model_stage2_malignant.keras")
