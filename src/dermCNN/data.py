@@ -38,24 +38,17 @@ def load_dataframe(mode: str = 'binary') -> pd.DataFrame:
         raise FileNotFoundError(f"CSV file not found: {CSV_PATH}")
     
     df = pd.read_csv(CSV_PATH)
-    
-    # 1. Decode one-hot encoded classes to a single original label
     df["original_label"] = df[CLASSES].idxmax(axis=1)
-    
-    # Construct full file paths and filter out missing images
     df["filepath"] = df["image"].apply(lambda x: os.path.join(BASE_DIR, x + ".jpg"))
     df = df[df["filepath"].apply(os.path.exists)]
 
-    # 2. Process labels based on the selected classification stage
     if mode == 'binary':
-        # Group into 'benign' and 'malignant'
         df['label'] = df['original_label'].apply(
             lambda x: 'benign' if x in BENIGN_CLASSES else 'malignant'
         )
         print("Stage 1 Mode: Binary Classification (Benign vs. Malignant).")
         
     elif mode == 'malignant_only':
-        # Filter the DataFrame to keep only malignant cases
         df = df[df['original_label'].isin(MALIGNANT_CLASSES)].copy()
         df['label'] = df['original_label']
         print("Stage 2 Mode: Multi-class Malignant Classification.")
@@ -78,13 +71,10 @@ def make_generators(df: pd.DataFrame, mode: str = 'binary') -> Tuple[DataFrameIt
         Tuple[DataFrameIterator, DataFrameIterator]: A tuple containing 
         (train_generator, test_generator).
     """
-    # Stratify ensures both sets have the exact same proportion of classes
     train_df, test_df = train_test_split(
         df, test_size=0.2, stratify=df["label"], random_state=42
     )
 
-    # Note: No 'rescale' is applied here because EfficientNet models expect 
-    # input values in the range [0, 255] and handle scaling internally.
     train_datagen = ImageDataGenerator(
         rotation_range=40, 
         width_shift_range=0.2, 
@@ -97,8 +87,6 @@ def make_generators(df: pd.DataFrame, mode: str = 'binary') -> Tuple[DataFrameIt
     )
     
     test_datagen = ImageDataGenerator()
-
-    # Set the appropriate class_mode based on the stage
     class_mode = "binary" if mode == 'binary' else "categorical"
 
     train_gen = train_datagen.flow_from_dataframe(
