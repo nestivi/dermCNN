@@ -56,6 +56,8 @@ bachelor/
 Link to download datasets:
 https://challenge.isic-archive.com/data/#2019
 
+* **IMPORTANT**: to train your own model, your train images must be in folder: **tests/**
+
 
 ## Installation
 
