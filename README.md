@@ -39,16 +39,13 @@ bachelor/
 │   │       callbacks.py     # EarlyStopping, ModelCheckpoint
 │   │       plot.py          # Training history visualization
 │   │       evaluate.py      # Testing & Confusion Matrix generation
-│   │       app_gradio.py    # Web interface for AI diagnosis
-│   │
-│   └───dermCNN.egg-info/
+│   └───    app_gradio.py    # Web interface for AI diagnosis
 │
 ├───tests/                   # ISIC_2019_Training_Input & GroundTruth.csv
 │   ├───ISIC_2019Training_Input/                # Dermatoscopic images of skin lesions
 │   └───ISIC_2019_Training_GroundTruth.csv
 │
 │   .gitignore
-│   .python-version
 │   pyproject.toml
 └── README.md
 ```
