@@ -55,6 +55,12 @@ bachelor/
 
 ---
 
+## Dataset: ISIC Challenge 2019
+Link to download datasets:
+```bash
+https://challenge.isic-archive.com/data/#2019
+```
+
 ## Installation
 
 1. Clone the repository:
@@ -164,8 +170,35 @@ The pipeline automatically handles plotting.
   - Training History: plot.py saves training_plot_binary.png showing Accuracy and Loss curves.
   - Evaluation: evaluate.py generates high-quality Confusion Matrices suitable for academic papers.
 
-  ---
+---
 
 ## License
 
-This project is licensed under the MIT License.
+This repository uses a dual-licensing approach to respect the strict non-commercial terms of the medical dataset used for training:
+
+* **Source Code:** All original source code in this repository is licensed under the [MIT License](LICENSE).
+* **Trained Models (Weights):** The pre-trained models/weights provided in this repository were trained on the ISIC 2019 dataset. As derivative works, they are licensed under the [Creative Commons Attribution-NonCommercial 4.0 International (CC-BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/) license. **You may not use these models for commercial purposes.**
+* **Ground Truth Data:** The ground truth files included here are part of the original ISIC 2019 dataset and are strictly licensed under [CC-BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
+
+By using the models or the data provided in this repository, you agree to comply with the non-commercial restrictions set by the original dataset authors.
+
+---
+
+## Acknowledgements and Citations
+
+The dataset used in this project is the **ISIC 2019 Challenge Dataset** (licensed under [CC-BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)). To comply with the attribution requirements, the aggregate "ISIC 2019" data is credited to the following sources:
+
+* **BCN_20000 Dataset**: (c) Department of Dermatology, Hospital Clínic de Barcelona
+
+* **HAM10000 Dataset**: (c) by ViDIR Group, Department of Dermatology, Medical University of Vienna; https://doi.org/10.1038/sdata.2018.161
+
+* **MSK Dataset: (c) Anonymous**; https://arxiv.org/abs/1710.05006; https://arxiv.org/abs/1902.03368 
+
+**Relevant Publications:**
+* [1] Tschandl P., Rosendahl C. & Kittler H. The HAM10000 dataset, a large collection of multi-source dermatoscopic images of common pigmented skin lesions. Sci. Data 5, 180161 doi.10.1038/sdata.2018.161 (2018)
+
+* [2] Noel C. F. Codella, David Gutman, M. Emre Celebi, Brian Helba, Michael A. Marchetti, Stephen W. Dusza, Aadi Kalloo, Konstantinos Liopyris, Nabin Mishra, Harald Kittler, Allan Halpern: "Skin Lesion Analysis Toward Melanoma Detection: A Challenge at the 2017 International Symposium on Biomedical Imaging (ISBI), Hosted by the International Skin Imaging Collaboration (ISIC)", 2017; arXiv:1710.05006.
+
+* [3] Hernández-Pérez C, Combalia M, Podlipnik S, Codella NC, Rotemberg V, Halpern AC, Reiter O, Carrera C, Barreiro A, Helba B, Puig S, Vilaplana V, Malvehy J. BCN20000: Dermoscopic lesions in the wild. Scientific Data. 2024 Jun 17;11(1):641.
+
+---
