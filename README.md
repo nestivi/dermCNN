@@ -57,9 +57,8 @@ bachelor/
 
 ## Dataset: ISIC Challenge 2019
 Link to download datasets:
-```bash
 https://challenge.isic-archive.com/data/#2019
-```
+
 
 ## Installation
 
