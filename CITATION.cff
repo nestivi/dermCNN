@@ -1,0 +1,87 @@
+cff-version: 1.2.0
+message: >-
+  If you use this software, please cite it as below. 
+  IMPORTANT: This repository uses dual licensing. The source code is licensed under MIT, but the pre-trained models and ISIC ground truth data are restricted to non-commercial use under CC-BY-NC-4.0. Please cite the original ISIC references alongside this project.
+title: "dermCNN"
+authors:
+  - family-names: "Krawiec"
+    given-names: "Martin"
+license: MIT
+repository-code: "https://github.com/nestivi/dermCNN"
+references:
+  - type: data
+    title: "ISIC 2019 Challenge Dataset"
+    url: "https://challenge.isic-archive.com/data/#2019"
+    license: "CC-BY-NC-4.0"
+  - type: article
+    authors:
+      - family-names: "Tschandl"
+        given-names: "Philipp"
+      - family-names: "Rosendahl"
+        given-names: "Cliff"
+      - family-names: "Kittler"
+        given-names: "Harald"
+    title: "The HAM10000 dataset, a large collection of multi-source dermatoscopic images of common pigmented skin lesions"
+    doi: "10.1038/sdata.2018.161"
+    journal: "Scientific Data"
+    year: 2018
+  - type: article
+    authors:
+      - family-names: "Codella"
+        given-names: "Noel C. F."
+      - family-names: "Gutman"
+        given-names: "David"
+      - family-names: "Celebi"
+        given-names: "M. Emre"
+      - family-names: "Helba"
+        given-names: "Brian"
+      - family-names: "Marchetti"
+        given-names: "Michael A."
+      - family-names: "Dusza"
+        given-names: "Stephen W."
+      - family-names: "Kalloo"
+        given-names: "Aadi"
+      - family-names: "Liopyris"
+        given-names: "Konstantinos"
+      - family-names: "Mishra"
+        given-names: "Nabin"
+      - family-names: "Kittler"
+        given-names: "Harald"
+      - family-names: "Halpern"
+        given-names: "Allan"
+    title: "Skin Lesion Analysis Toward Melanoma Detection: A Challenge at the 2017 International Symposium on Biomedical Imaging (ISBI), Hosted by the International Skin Imaging Collaboration (ISIC)"
+    year: 2017
+    url: "https://arxiv.org/abs/1710.05006"
+  - type: article
+    authors:
+      - family-names: "Hernández-Pérez"
+        given-names: "C."
+      - family-names: "Combalia"
+        given-names: "M."
+      - family-names: "Podlipnik"
+        given-names: "S."
+      - family-names: "Codella"
+        given-names: "NC."
+      - family-names: "Rotemberg"
+        given-names: "V."
+      - family-names: "Halpern"
+        given-names: "AC."
+      - family-names: "Reiter"
+        given-names: "O."
+      - family-names: "Carrera"
+        given-names: "C."
+      - family-names: "Barreiro"
+        given-names: "A."
+      - family-names: "Helba"
+        given-names: "B."
+      - family-names: "Puig"
+        given-names: "S."
+      - family-names: "Vilaplana"
+        given-names: "V."
+      - family-names: "Malvehy"
+        given-names: "J."
+    title: "BCN20000: Dermoscopic lesions in the wild"
+    journal: "Scientific Data"
+    volume: 11
+    issue: 1
+    year: 2024
