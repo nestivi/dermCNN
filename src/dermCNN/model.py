@@ -9,7 +9,7 @@ classification stages.
 import tensorflow as tf
 from tensorflow.keras import layers, models, applications
 
-from .config import IMG_SIZE
+from .config import settings
 
 def build_model(mode: str = 'binary') -> models.Sequential:
     """Builds and compiles the Keras Sequential model.
@@ -22,12 +22,6 @@ def build_model(mode: str = 'binary') -> models.Sequential:
         mode (str): The classification mode. Valid options are 'binary' 
             (benign vs. malignant) or 'malignant_only' (classification of 
             malignant types). Defaults to 'binary'.
-
-    Returns:
-        models.Sequential: A compiled Keras model ready for training.
-        
-    Raises:
-        ValueError: If an unsupported mode is provided.
     """
     if mode not in ['binary', 'malignant_only']:
         raise ValueError(f"Unsupported mode: {mode}. Choose 'binary' or 'malignant_only'.")
@@ -36,18 +30,18 @@ def build_model(mode: str = 'binary') -> models.Sequential:
     base_model = applications.EfficientNetB0(
         weights='imagenet', 
         include_top=False, 
-        input_shape=(IMG_SIZE, IMG_SIZE, 3)
+        input_shape=(settings.img_size, settings.img_size, 3)
     )
     
-    base_model.trainable = False  # Freeze the base model to retain pre-trained ImageNet features
+    base_model.trainable = False
 
     model = models.Sequential([
         base_model,
         layers.GlobalAveragePooling2D(),
         layers.BatchNormalization(),
-        layers.Dropout(0.3),
-        layers.Dense(256, activation='relu'),
-        layers.Dropout(0.3)
+        layers.Dropout(settings.dropout_rate),
+        layers.Dense(settings.dense_units, activation='relu'),
+        layers.Dropout(settings.dropout_rate)
     ])
 
     if mode == 'binary':
@@ -56,7 +50,7 @@ def build_model(mode: str = 'binary') -> models.Sequential:
     else:
         model.add(layers.Dense(4, activation='softmax'))
         loss_fn = "categorical_crossentropy"
-    optimizer = tf.keras.optimizers.Adam(learning_rate=0.0001)
+    optimizer = tf.keras.optimizers.Adam(learning_rate=settings.learning_rate)
     
     model.compile(
         optimizer=optimizer, 
