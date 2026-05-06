@@ -28,7 +28,8 @@ dependencies = [
     "matplotlib>=3.7.0",
     "gradio>=4.0.0",
     "pillow>=10.0.0",
-    "numpy<2.0.0" # Recommended for stability with current TensorFlow versions
+    "numpy<2.0.0",
+    "pydantic-settings"
 ]
 
 [project.scripts]
