@@ -5,32 +5,27 @@ the training process, including early stopping, model checkpointing,
 and CSV logging.
 """
 
-from typing import List
+import os
 from tensorflow.keras.callbacks import Callback, CSVLogger, EarlyStopping, ModelCheckpoint
+from .config import settings
 
-def get_callbacks(mode: str = 'binary') -> List[Callback]:
-    """Creates and configures Keras callbacks for model training.
-
-    Args:
-        mode (str): The classification mode. Determines the output filenames
-            for the saved models and logs. Defaults to 'binary'.
-
-    Returns:
-        List[Callback]: A list of configured Keras callback instances.
-    """
+def get_callbacks(mode: str = 'binary') -> tuple[Callback, ...]:
+    """Creates and configures Keras callbacks for model training."""
     early = EarlyStopping(
         monitor="val_loss",
-        patience=5,
-        restore_best_weights=True # Restores model weights from the epoch with the best validation loss.
+        patience=settings.early_stopping_patience,
+        restore_best_weights=True
     )
 
     checkpoint = ModelCheckpoint(
-        filepath=f"results/best_model_{mode}.keras",
+        filepath=os.path.join("results", f"best_model_{mode}.keras"),
         monitor="val_loss",
         save_best_only=True
     )
 
     # Stream epoch results to a CSV file for later analysis and plotting
-    logger = CSVLogger(filename=f"results/training_log_{mode}.csv")
+    logger = CSVLogger(
+        filename=os.path.join("results", f"training_log_{mode}.csv")
+    )
 
-    return [early, checkpoint, logger]
+    return (early, checkpoint, logger)
