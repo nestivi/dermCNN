@@ -45,7 +45,10 @@ bachelor/
 │   ├───ISIC_2019Training_Input/                # Dermatoscopic images of skin lesions
 │   └───ISIC_2019_Training_GroundTruth.csv
 │
+│   .env
 │   .gitignore
+│   CITATION.cff
+│   LICENSE
 │   pyproject.toml
 └── README.md
 ```
@@ -137,7 +140,7 @@ Open the provided local URL in your web browser.
 ## Tuning the Model
 
 Hyperparameters
-Centralized configurations can be found in src/dermCNN/config.py:
+Configurations can be found in .env or src/dermCNN/config.py:
 
   - IMG_SIZE = 224 (Required by EfficientNetB0)
   - BATCH_SIZE = 32
