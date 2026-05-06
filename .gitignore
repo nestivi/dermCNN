@@ -8,6 +8,7 @@ wheels/
 
 # Virtual environments
 .venv
+.env
 
 # Dataset and test files
 tests/ISIC_2019_Training_Input
