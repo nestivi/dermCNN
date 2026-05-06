@@ -6,16 +6,12 @@ Keras ImageDataGenerators for training and testing with data augmentation.
 """
 
 import os
-from typing import Tuple
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.preprocessing.image import ImageDataGenerator, DataFrameIterator
 
 from .config import (
-    BASE_DIR, 
-    CSV_PATH, 
-    IMG_SIZE, 
-    BATCH_SIZE, 
+    settings, 
     CLASSES, 
     BENIGN_CLASSES, 
     MALIGNANT_CLASSES
@@ -30,17 +26,19 @@ def load_dataframe(mode: str = 'binary') -> pd.DataFrame:
 
     Returns:
         pd.DataFrame: A processed DataFrame containing file paths and assigned labels.
-
-    Raises:
-        FileNotFoundError: If the ground truth CSV file is not found at CSV_PATH.
     """
-    if not os.path.exists(CSV_PATH):
-        raise FileNotFoundError(f"CSV file not found: {CSV_PATH}")
+    if not os.path.exists(settings.csv_path):
+        raise FileNotFoundError(f"CSV file not found: {settings.csv_path}")
     
-    df = pd.read_csv(CSV_PATH)
-    df["original_label"] = df[CLASSES].idxmax(axis=1)
-    df["filepath"] = df["image"].apply(lambda x: os.path.join(BASE_DIR, x + ".jpg"))
+    df = pd.read_csv(settings.csv_path)
+    df["original_label"] = df[list(CLASSES)].idxmax(axis=1)
+    
+    df["filepath"] = df["image"].apply(lambda x: os.path.join(settings.base_dir, x + ".jpg"))
     df = df[df["filepath"].apply(os.path.exists)]
+
+    if settings.debug_mode:
+        print("TRYB DEBUGOWANIA: Trenuję tylko na 100 losowych próbkach!")
+        df = df.sample(100)
 
     if mode == 'binary':
         df['label'] = df['original_label'].apply(
@@ -56,23 +54,16 @@ def load_dataframe(mode: str = 'binary') -> pd.DataFrame:
     print(f"Data distribution:\n{df['label'].value_counts()}")
     return df
 
-def make_generators(df: pd.DataFrame, mode: str = 'binary') -> Tuple[DataFrameIterator, DataFrameIterator]:
+def make_generators(df: pd.DataFrame, mode: str = 'binary') -> tuple[DataFrameIterator, DataFrameIterator]:
     """Creates Keras image data generators for training and validation.
-
-    Splits the provided DataFrame into training and testing sets while maintaining
-    class distribution. Applies data augmentation to the training set.
 
     Args:
         df (pd.DataFrame): The DataFrame containing image paths and labels.
         mode (str): The classification mode. Determines the class_mode for the generator.
             Defaults to 'binary'.
-
-    Returns:
-        Tuple[DataFrameIterator, DataFrameIterator]: A tuple containing 
-        (train_generator, test_generator).
     """
     train_df, test_df = train_test_split(
-        df, test_size=0.2, stratify=df["label"], random_state=42
+        df, test_size=0.2, stratify=df["label"], random_state=settings.random_seed
     )
 
     train_datagen = ImageDataGenerator(
@@ -93,9 +84,9 @@ def make_generators(df: pd.DataFrame, mode: str = 'binary') -> Tuple[DataFrameIt
         train_df, 
         x_col="filepath", 
         y_col="label",
-        target_size=(IMG_SIZE, IMG_SIZE),
+        target_size=(settings.img_size, settings.img_size),
         class_mode=class_mode, 
-        batch_size=BATCH_SIZE, 
+        batch_size=settings.batch_size, 
         shuffle=True
     )
 
@@ -103,9 +94,9 @@ def make_generators(df: pd.DataFrame, mode: str = 'binary') -> Tuple[DataFrameIt
         test_df, 
         x_col="filepath", 
         y_col="label",
-        target_size=(IMG_SIZE, IMG_SIZE),
+        target_size=(settings.img_size, settings.img_size),
         class_mode=class_mode, 
-        batch_size=BATCH_SIZE, 
+        batch_size=settings.batch_size, 
         shuffle=False
     )
 
