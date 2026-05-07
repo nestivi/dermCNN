@@ -37,8 +37,8 @@ def load_dataframe(mode: str = 'binary') -> pd.DataFrame:
     df = df[df["filepath"].apply(os.path.exists)]
 
     if settings.debug_mode:
-        print("TRYB DEBUGOWANIA: Trenuję tylko na 100 losowych próbkach!")
-        df = df.sample(100)
+        print("DEBUG MODE: Train only on 100 random samples!")
+        df = df.sample(n = 100, random_state=settings.random_seed).reset_index(drop=True)
 
     if mode == 'binary':
         df['label'] = df['original_label'].apply(
@@ -66,16 +66,19 @@ def make_generators(df: pd.DataFrame, mode: str = 'binary') -> tuple[DataFrameIt
         df, test_size=0.2, stratify=df["label"], random_state=settings.random_seed
     )
 
-    train_datagen = ImageDataGenerator(
-        rotation_range=40, 
-        width_shift_range=0.2, 
-        height_shift_range=0.2,
-        shear_range=0.2, 
-        zoom_range=0.2, 
-        horizontal_flip=True, 
-        vertical_flip=True, 
-        fill_mode='nearest'
-    )
+    if settings.use_data_augumentation:
+        train_datagen = ImageDataGenerator(
+            rotation_range=40, 
+            width_shift_range=0.2, 
+            height_shift_range=0.2,
+            shear_range=0.2, 
+            zoom_range=0.2, 
+            horizontal_flip=True, 
+            vertical_flip=True, 
+            fill_mode='nearest'
+        )
+    else:
+        train_datagen = ImageDataGenerator()
     
     test_datagen = ImageDataGenerator()
     class_mode = "binary" if mode == 'binary' else "categorical"
