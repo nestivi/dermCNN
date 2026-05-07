@@ -25,7 +25,7 @@ The project supports:
 ## Project Structure
 
 ```text
-bachelor/
+dermCNN/
 ├───results/                 # Saved models (.keras), plots, and logs
 │
 ├───src/
