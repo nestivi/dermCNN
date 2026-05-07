@@ -6,7 +6,7 @@ and CSV logging.
 """
 
 import os
-from tensorflow.keras.callbacks import Callback, CSVLogger, EarlyStopping, ModelCheckpoint
+from tensorflow.keras.callbacks import Callback, CSVLogger, EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 from .config import settings
 
 def get_callbacks(mode: str = 'binary') -> tuple[Callback, ...]:
@@ -15,6 +15,13 @@ def get_callbacks(mode: str = 'binary') -> tuple[Callback, ...]:
         monitor="val_loss",
         patience=settings.early_stopping_patience,
         restore_best_weights=True
+    )
+
+    reduce_lr = ReduceLROnPlateau(
+        monitor="val_loss",
+        factor=settings.lr_reduce_factor,
+        patience=settings.lr_reduce_patience,
+        min_lr=1e-6
     )
 
     checkpoint = ModelCheckpoint(
@@ -28,4 +35,4 @@ def get_callbacks(mode: str = 'binary') -> tuple[Callback, ...]:
         filename=os.path.join("results", f"training_log_{mode}.csv")
     )
 
-    return (early, checkpoint, logger)
+    return (early, reduce_lr, checkpoint, logger)
