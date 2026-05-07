@@ -8,6 +8,8 @@ training loop, saving the final model, and plotting the training history.
 import os
 import logging
 from tensorflow.keras.callbacks import History
+from sklearn.utils import compute_class_weight
+import numpy as np
 
 from .data import load_dataframe, make_generators
 from .model import build_model
@@ -36,11 +38,21 @@ def train(mode: str = 'binary') -> History:
     model = build_model(mode=mode)
     callbacks = get_callbacks(mode=mode)
 
+    class_weights_dict = None
+    if settings.use_class_weights:
+        weights = compute_class_weight(
+            class_weight='balanced',
+            classes=np.unique(train_gen),
+            y=train_gen)
+        class_weights_dict = dict(enumerate(weights))
+        logging.info(f"Computed class weights: {class_weights_dict}")
+
     history = model.fit(
         train_gen,
         validation_data=test_gen,
         epochs=settings.epochs,
-        callbacks=callbacks
+        callbacks=callbacks,
+        class_weight=class_weights_dict
     )
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
