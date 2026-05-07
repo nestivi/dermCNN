@@ -8,7 +8,8 @@ Keras ImageDataGenerators for training and testing with data augmentation.
 import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.preprocessing.image import ImageDataGenerator, DataFrameIterator
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from typing import Iterator
 
 from .config import (
     settings, 
@@ -54,7 +55,7 @@ def load_dataframe(mode: str = 'binary') -> pd.DataFrame:
     print(f"Data distribution:\n{df['label'].value_counts()}")
     return df
 
-def make_generators(df: pd.DataFrame, mode: str = 'binary') -> tuple[DataFrameIterator, DataFrameIterator]:
+def make_generators(df: pd.DataFrame, mode: str = 'binary') -> tuple[Iterator, Iterator]:
     """Creates Keras image data generators for training and validation.
 
     Args:
