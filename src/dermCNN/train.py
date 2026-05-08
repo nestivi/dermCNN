@@ -40,10 +40,11 @@ def train(mode: str = 'binary') -> History:
 
     class_weights_dict = None
     if settings.use_class_weights:
+        train_labels = train_gen.classes
         weights = compute_class_weight(
             class_weight='balanced',
-            classes=np.unique(train_gen),
-            y=train_gen)
+            classes=np.unique(train_labels),
+            y=train_labels)
         class_weights_dict = dict(enumerate(weights))
         logging.info(f"Computed class weights: {class_weights_dict}")
 
