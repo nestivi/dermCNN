@@ -50,7 +50,7 @@ def evaluate_model(mode: str = 'binary') -> None:
     class_labels = list(test_gen.class_indices.keys())
 
     if mode == 'binary':
-        y_pred = (predictions > 0.5).astype(int).flatten()
+        y_pred = (predictions > settings.optimal_threshold).astype(int).flatten()
     else:
         y_pred = np.argmax(predictions, axis=1)
 
@@ -61,7 +61,7 @@ def evaluate_model(mode: str = 'binary') -> None:
         cm, annot=True, fmt='d', cmap='Blues', 
         xticklabels=class_labels, yticklabels=class_labels
     )
-    plt.title(f'AI Confusion Matrix - {mode.upper()}')
+    plt.title(f'Confusion Matrix - {mode.upper()}')
     plt.ylabel('True Diagnosis')
     plt.xlabel('Model Prediction')
     
