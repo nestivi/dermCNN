@@ -11,23 +11,34 @@ from .config import settings
 
 def get_callbacks(mode: str = 'binary') -> tuple[Callback, ...]:
     """Creates and configures Keras callbacks for model training."""
+
+    if mode == 'binary':
+        monitor_metric = "val_loss",
+        mode = "min"
+    else:
+        monitor_metric = "val_macro_f1_score",
+        mode = "max"
+
     early = EarlyStopping(
-        monitor="val_loss",
+        monitor=monitor_metric,
         patience=settings.early_stopping_patience,
-        restore_best_weights=True
+        restore_best_weights=True,
+        mode=mode
     )
 
     reduce_lr = ReduceLROnPlateau(
-        monitor="val_loss",
+        monitor=monitor_metric,
         factor=settings.lr_reduce_factor,
         patience=settings.lr_reduce_patience,
-        min_lr=1e-6
+        min_lr=1e-6,
+        mode=mode,
     )
 
     checkpoint = ModelCheckpoint(
         filepath=os.path.join("results", f"best_model_{mode}.keras"),
-        monitor="val_loss",
-        save_best_only=True
+        monitor=monitor_metric,
+        save_best_only=True,
+        mode=mode
     )
 
     # Stream epoch results to a CSV file for later analysis and plotting
