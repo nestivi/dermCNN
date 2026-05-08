@@ -35,7 +35,6 @@ class Settings(BaseSettings):
     # --- Callbacks and training control ---
     early_stopping_patience: int = 5
     use_data_augumentation: bool = True
-    validation_split: float = 0.2
 
     # --- Environment control ---
     random_seed: int = 42
