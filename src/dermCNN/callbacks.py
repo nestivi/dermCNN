@@ -14,16 +14,16 @@ def get_callbacks(mode: str = 'binary') -> tuple[Callback, ...]:
 
     if mode == 'binary':
         monitor_metric = "val_loss",
-        mode = "min"
+        callback_mode = "min"
     else:
         monitor_metric = "val_macro_f1_score",
-        mode = "max"
+        callback_mode = "max"
 
     early = EarlyStopping(
         monitor=monitor_metric,
         patience=settings.early_stopping_patience,
         restore_best_weights=True,
-        mode=mode
+        mode=callback_mode
     )
 
     reduce_lr = ReduceLROnPlateau(
@@ -31,14 +31,14 @@ def get_callbacks(mode: str = 'binary') -> tuple[Callback, ...]:
         factor=settings.lr_reduce_factor,
         patience=settings.lr_reduce_patience,
         min_lr=1e-6,
-        mode=mode,
+        mode=callback_mode,
     )
 
     checkpoint = ModelCheckpoint(
         filepath=os.path.join("results", f"best_model_{mode}.keras"),
         monitor=monitor_metric,
         save_best_only=True,
-        mode=mode
+        mode=callback_mode
     )
 
     # Stream epoch results to a CSV file for later analysis and plotting
