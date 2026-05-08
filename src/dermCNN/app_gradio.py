@@ -82,7 +82,7 @@ def predict_pipeline(image: np.ndarray) -> dict[str, float]:
 
     stage2_results: dict[str, float] = {}
 
-    if prob_malignant >= 0.5:
+    if prob_malignant >= settings.optimal_threshold:
         pred_stage2 = model_stage2.predict(img_array)[0]
         for i, class_name in enumerate(STAGE2_CLASSES):
             stage2_results[class_name] = float(pred_stage2[i])
