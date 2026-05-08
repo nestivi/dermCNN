@@ -51,10 +51,12 @@ def build_model(mode: str = 'binary') -> models.Sequential:
 
     if mode == 'binary':
         model.add(layers.Dense(1, activation='sigmoid'))
-        loss_fn = "binary_crossentropy"
+        loss_fn = "binary_crossentropy",
+        metrics_list = ["accuracy"]
     else:
         model.add(layers.Dense(4, activation='softmax'))
-        loss_fn = "categorical_crossentropy"
+        loss_fn = "categorical_crossentropy",
+        metrics_list=["accuracy", tf.keras.metrics.F1Score(average='macro', name='macro_f1_score')]
     
     opt_name = settings.optimizer.lower()
 
@@ -70,7 +72,7 @@ def build_model(mode: str = 'binary') -> models.Sequential:
     model.compile(
         optimizer=optimizer, 
         loss=loss_fn, 
-        metrics=["accuracy"]
+        metrics=metrics_list
     )
     
     return model
