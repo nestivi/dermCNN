@@ -28,9 +28,9 @@ class Settings(BaseSettings):
     dropout_rate: float = 0.3
     dense_units: int = 256
     unfreeze_layers: int = 0
-    lr_reduce_factor: float = 0.5
+    lr_reduce_factor: float = 0.1
     lr_reduce_patience: int = 3
-    use_class_weights: bool = False
+    use_class_weights: bool = True
 
     # --- Callbacks and training control ---
     early_stopping_patience: int = 5
@@ -40,6 +40,7 @@ class Settings(BaseSettings):
     # --- Environment control ---
     random_seed: int = 42
     debug_mode: bool = False
+    optimal_threshold: float = 0.3999
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
