@@ -5,32 +5,45 @@ the training process, including early stopping, model checkpointing,
 and CSV logging.
 """
 
-from typing import List
-from tensorflow.keras.callbacks import Callback, CSVLogger, EarlyStopping, ModelCheckpoint
+import os
+from tensorflow.keras.callbacks import Callback, CSVLogger, EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
+from .config import settings
 
-def get_callbacks(mode: str = 'binary') -> List[Callback]:
-    """Creates and configures Keras callbacks for model training.
+def get_callbacks(mode: str = 'binary') -> tuple[Callback, ...]:
+    """Creates and configures Keras callbacks for model training."""
 
-    Args:
-        mode (str): The classification mode. Determines the output filenames
-            for the saved models and logs. Defaults to 'binary'.
+    if mode == 'binary':
+        monitor_metric = "val_loss",
+        callback_mode = "min"
+    else:
+        monitor_metric = "val_macro_f1_score",
+        callback_mode = "max"
 
-    Returns:
-        List[Callback]: A list of configured Keras callback instances.
-    """
     early = EarlyStopping(
-        monitor="val_loss",
-        patience=5,
-        restore_best_weights=True # Restores model weights from the epoch with the best validation loss.
+        monitor=monitor_metric,
+        patience=settings.early_stopping_patience,
+        restore_best_weights=True,
+        mode=callback_mode
+    )
+
+    reduce_lr = ReduceLROnPlateau(
+        monitor=monitor_metric,
+        factor=settings.lr_reduce_factor,
+        patience=settings.lr_reduce_patience,
+        min_lr=1e-6,
+        mode=callback_mode,
     )
 
     checkpoint = ModelCheckpoint(
-        filepath=f"results/best_model_{mode}.keras",
-        monitor="val_loss",
-        save_best_only=True
+        filepath=os.path.join("results", f"best_model_{mode}.keras"),
+        monitor=monitor_metric,
+        save_best_only=True,
+        mode=callback_mode
     )
 
     # Stream epoch results to a CSV file for later analysis and plotting
-    logger = CSVLogger(filename=f"results/training_log_{mode}.csv")
+    logger = CSVLogger(
+        filename=os.path.join("results", f"training_log_{mode}.csv")
+    )
 
-    return [early, checkpoint, logger]
+    return (early, reduce_lr, checkpoint, logger)

@@ -9,7 +9,7 @@ classification stages.
 import tensorflow as tf
 from tensorflow.keras import layers, models, applications
 
-from .config import IMG_SIZE
+from .config import settings
 
 def build_model(mode: str = 'binary') -> models.Sequential:
     """Builds and compiles the Keras Sequential model.
@@ -22,12 +22,6 @@ def build_model(mode: str = 'binary') -> models.Sequential:
         mode (str): The classification mode. Valid options are 'binary' 
             (benign vs. malignant) or 'malignant_only' (classification of 
             malignant types). Defaults to 'binary'.
-
-    Returns:
-        models.Sequential: A compiled Keras model ready for training.
-        
-    Raises:
-        ValueError: If an unsupported mode is provided.
     """
     if mode not in ['binary', 'malignant_only']:
         raise ValueError(f"Unsupported mode: {mode}. Choose 'binary' or 'malignant_only'.")
@@ -36,32 +30,49 @@ def build_model(mode: str = 'binary') -> models.Sequential:
     base_model = applications.EfficientNetB0(
         weights='imagenet', 
         include_top=False, 
-        input_shape=(IMG_SIZE, IMG_SIZE, 3)
+        input_shape=(settings.img_size, settings.img_size, 3)
     )
     
-    base_model.trainable = False  # Freeze the base model to retain pre-trained ImageNet features
+    base_model.trainable = True
+    if settings.unfreeze_layers == 0:
+        base_model.trainable = False
+    else:
+        for layer in base_model.layers[:-settings.unfreeze_layers]:
+            layer.trainable = False
 
     model = models.Sequential([
         base_model,
         layers.GlobalAveragePooling2D(),
         layers.BatchNormalization(),
-        layers.Dropout(0.3),
-        layers.Dense(256, activation='relu'),
-        layers.Dropout(0.3)
+        layers.Dropout(settings.dropout_rate),
+        layers.Dense(settings.dense_units, activation='relu'),
+        layers.Dropout(settings.dropout_rate)
     ])
 
     if mode == 'binary':
         model.add(layers.Dense(1, activation='sigmoid'))
-        loss_fn = "binary_crossentropy"
+        loss_fn = "binary_crossentropy",
+        metrics_list = ["accuracy"]
     else:
         model.add(layers.Dense(4, activation='softmax'))
-        loss_fn = "categorical_crossentropy"
-    optimizer = tf.keras.optimizers.Adam(learning_rate=0.0001)
+        loss_fn = "categorical_crossentropy",
+        metrics_list=["accuracy", tf.keras.metrics.F1Score(average='macro', name='macro_f1_score')]
     
+    opt_name = settings.optimizer.lower()
+
+    if opt_name == "adam":
+        optimizer = tf.keras.optimizers.Adam(learning_rate=settings.learning_rate)
+    elif opt_name == "sgd":
+        optimizer = tf.keras.optimizers.SGD(learning_rate=settings.learning_rate, momentum=0.9)
+    elif opt_name == "rmsprop":
+        optimizer = tf.keras.optimizers.RMSprop(learning_rate=settings.learning_rate)
+    else:
+        raise ValueError(f"Unsupported optimizer: {opt_name}. Choose 'adam', 'sgd', or 'rmsprop' in .env file.")
+
     model.compile(
         optimizer=optimizer, 
         loss=loss_fn, 
-        metrics=["accuracy"]
+        metrics=metrics_list
     )
     
     return model

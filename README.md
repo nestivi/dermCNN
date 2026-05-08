@@ -25,7 +25,7 @@ The project supports:
 ## Project Structure
 
 ```text
-bachelor/
+dermCNN/
 ├───results/                 # Saved models (.keras), plots, and logs
 │
 ├───src/
@@ -45,7 +45,10 @@ bachelor/
 │   ├───ISIC_2019Training_Input/                # Dermatoscopic images of skin lesions
 │   └───ISIC_2019_Training_GroundTruth.csv
 │
+│   .env
 │   .gitignore
+│   CITATION.cff
+│   LICENSE
 │   pyproject.toml
 └── README.md
 ```
@@ -134,16 +137,46 @@ Open the provided local URL in your web browser.
 
 ---
 
-## Tuning the Model
+## Configuration Management
 
+**Setting up your environment:**
+Copy the provided template to create your local environment file:
+   ```bash
+   cp .env.example .env
+   ```
+Tuning: to suit your current training you can change parameters in .env file.
+   
 Hyperparameters
-Centralized configurations can be found in src/dermCNN/config.py:
+Configurations can be found in .env or src/dermCNN/config.py:
 
-  - IMG_SIZE = 224 (Required by EfficientNetB0)
-  - BATCH_SIZE = 32
-  - EPOCHS = 20
+  1. Training hyperparameters:
+    - EPOCHS=50
+    - BATCH_SIZE=32
+    - LEARNING_RATE=0.0001
+    - OPTIMIZER=adam
+  
+  2. Model architecture settings:
+    - IMG_SIZE=224
+    - DROPOUT_RATE=0.3          # How much dropout to apply in the fully connected layers
+    - DENSE_UNITS=256           # Number of neurons in the last layer before classification
+    - UNFREEZE_LAYERS=0
+    - LR_REDUCTION_FACTOR=0.1
+    - LR_REDUCTION_PATIENCE=3
+    - USE_CLASS_WEIGHTS=False
+  
+  2. Callbacks and training control:
+    - EARLY_STOPPING_PATIENCE=5
+    - USE_DATA_AUGMENTATION=True
+    - VALIDATION_SPLIT=0.2
+  
+  4. Environment control
+    - RANDOM_SEED=42            # Always the same splits and results for reproducibility
+    - DEBUG_MODE=False          # Debug mode can be used to cut the dataset to 100 images for quick testing
+    - OPTIMAL_THRESHOLD=0.3999  # Threshold for determining malignant vs. benign predictions
 
-Architecture & Transfer Learning
+---
+
+## Architecture & Transfer Learning
 
 The network architecture is defined in src/dermCNN/model.py. The base EfficientNetB0 model is frozen to utilize pre-trained ImageNet features.
 If you want to fine-tune the model or increase its complexity, you can:
@@ -161,7 +194,7 @@ Training is monitored via src/dermCNN/callbacks.py.
 
 ---
 
-Visualizing Results
+## Visualizing Results
 
 The pipeline automatically handles plotting.
 

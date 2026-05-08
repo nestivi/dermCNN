@@ -1,7 +1,6 @@
 """Command-line interface entry point for the DermCNN training pipeline.
 
-This script allows users to start the training process directly from the 
-terminal by executing the module. It provides arguments to select the 
+Provides arguments to select the 
 classification mode (binary or malignant_only).
 """
 
