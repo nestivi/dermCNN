@@ -19,6 +19,10 @@ class Settings(BaseSettings):
     model_output_path_stage1: str = os.path.join("results", "model_stage1_binary.keras")
     model_output_path_stage2: str = os.path.join("results", "model_stage2_malignant.keras")
 
+    # --- Best Model Paths ---
+    best_model_path_binary: str = os.path.join("results", "best_model_binary.keras")
+    best_model_path_malignant_only: str = os.path.join("results", "best_model_malignant_only.keras")
+
     # --- Model Hyperparameters ---
     img_size: int = 224
     batch_size: int = 32
