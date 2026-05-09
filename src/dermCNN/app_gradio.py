@@ -11,8 +11,11 @@ from enum import Enum
 import gradio as gr
 import numpy as np
 import tensorflow as tf
+import logging
 from PIL import Image
 from dermCNN.config import settings
+
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
 class DiagnosisState(str, Enum):
     BENIGN = "BENIGN Lesion"
@@ -36,17 +39,18 @@ def load_models() -> None:
     global model_stage1, model_stage2
     
     if model_stage1 is None or model_stage2 is None:
-        print("Loading models into memory... This may take a moment.")
+        logging.info("Loading models into memory... This may take a moment.")
         
-        if not os.path.exists(settings.model_output_path_stage1) or not os.path.exists(settings.model_output_path_stage2):
+        if not os.path.exists(settings.best_model_path_binary) or not os.path.exists(settings.best_model_path_malignant_only):
+            logging.error("Model files not found at specified paths.")
             raise FileNotFoundError(
                 "Model files are missing. Please run the training pipeline first."
             )
             
             
-        model_stage1 = tf.keras.models.load_model(settings.model_output_path_stage1)
-        model_stage2 = tf.keras.models.load_model(settings.model_output_path_stage2)
-        print("Models loaded successfully!")
+        model_stage1 = tf.keras.models.load_model(settings.best_model_path_binary)
+        model_stage2 = tf.keras.models.load_model(settings.best_model_path_malignant_only)
+        logging.info("Models loaded successfully!")
 
 def preprocess_image(image: np.ndarray) -> np.ndarray:
     """Resizes and formats the image array for model input."""
