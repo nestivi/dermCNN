@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
 class DiagnosisState(str, Enum):
     BENIGN = "BENIGN Lesion"
-    MALIGNANT = "MALIGNANT Lesion - Probability"
+    MALIGNANT = "MALIGNANT Lesion"
     RISK = "Malignancy Risk"
     ERROR = "Error"
 
