@@ -24,3 +24,5 @@ tests/MLtimes_1.txt
 # results/training_log_*.csv
 # *.png
 # classification_report_*.txt
+results/.temp_for_experiments
+results/results_before_1305
