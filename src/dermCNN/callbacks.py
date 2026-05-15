@@ -13,10 +13,10 @@ def get_callbacks(mode: str = 'binary') -> tuple[Callback, ...]:
     """Creates and configures Keras callbacks for model training."""
 
     if mode == 'binary':
-        monitor_metric = "val_loss",
+        monitor_metric = "val_loss"
         callback_mode = "min"
     else:
-        monitor_metric = "val_macro_f1_score",
+        monitor_metric = "val_macro_f1_score"
         callback_mode = "max"
 
     early = EarlyStopping(
