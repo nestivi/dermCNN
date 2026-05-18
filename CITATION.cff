@@ -5,7 +5,7 @@ message: >-
 title: "dermCNN"
 authors:
   - family-names: "Krawiec"
-    given-names: "Martin"
+    given-names: "Martin N."
 license: MIT
 repository-code: "https://github.com/nestivi/dermCNN"
 references:
