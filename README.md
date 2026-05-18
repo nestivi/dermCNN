@@ -8,7 +8,7 @@ This project implements an advanced Cascade Convolutional Neural Network (CNN) s
 
 Instead of a simple binary classifier, it utilizes a **Two-Stage Cascade Architecture** powered by Transfer Learning (EfficientNetB0):
 1. **Stage 1 (Binary):** Determines if a lesion is Benign (NV, BKL, DF, VASC) or Malignant (MEL, BCC, AK, SCC).
-2. **Stage 2 (Multi-class):** If malignant, it classifies the specific type of skin cancer.
+2. **Stage 2 (Multi-class: Malignant Only):** If malignant, it classifies the specific type of skin cancer.
 
 
 
@@ -59,7 +59,7 @@ dermCNN/
 Link to download datasets:
 https://challenge.isic-archive.com/data/#2019
 
-* **IMPORTANT**: to train your own model, your train images must be in folder: **tests/**
+* **IMPORTANT**: to train your own model, your train images must be in folder: **tests/**, or path to your train images must be set properly in .env file.
 
 
 ## Installation
