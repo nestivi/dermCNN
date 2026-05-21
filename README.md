@@ -59,7 +59,7 @@ dermCNN/
 Link to download datasets:
 https://challenge.isic-archive.com/data/#2019
 
-* **IMPORTANT**: to train your own model, your train images must be in folder: **tests/**, or path to your train images must be set properly in .env file.
+* **IMPORTANT**: to train your own model, train images must be in folder: **tests/**.
 
 
 ## Installation
